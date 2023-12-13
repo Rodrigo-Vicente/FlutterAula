@@ -1,11 +1,29 @@
 import 'package:aula_mobile_flutter_full06/pages/login.dart';
 import 'package:aula_mobile_flutter_full06/pages/user.dart';
+import 'package:aula_mobile_flutter_full06/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final _title = 'Listagem de Usuários';
+  final _service = UserService();
+
+  Future<List<dynamic>> fetchUsers() async {
+    try {
+      List<dynamic> list = await _service.getList();
+      list.add(<String, String> { 'id': '2', 'name': 'Fulano de Tal', 'username': 'fulanotal' });
+      return list;
+    } catch (e) {
+      // logout
+      return [];
+    }
+  }
 
   void goToCreateUser(context) {
     Navigator.push(
@@ -37,18 +55,38 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text('Usuário 1'),
-            Text('Usuário 2'),
-            Text('Usuário 3'),
-            Text('Usuário 4'),
-            Text('Usuário 5'),
-          ],
-        ),
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: _buildList(),
       ),
+    );
+  }
+
+  Widget _buildList() {
+    return FutureBuilder(
+      future: fetchUsers(),
+      builder: (context, snapshot) {
+        List<dynamic> users = snapshot.data ?? [];
+
+        return ListView.builder(
+          itemCount: users.length,
+          itemBuilder: (context, index) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Text(users[index]['name']),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Text(users[index]['username']),
+                )
+              ],
+            );
+          }
+        );
+      },
     );
   }
 }
