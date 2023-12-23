@@ -7,18 +7,15 @@ import 'package:http/http.dart' as http;
 class AuthService {
   static const appJson = 'application/json; charset=UTF-8';
 
-  final String _baseUrl = 'http://192.168.0.6:3030/auth/login';
+  final String _baseUrl = 'http://localhost:3030/auth/login';
 
   final SessionService _session = SessionService();
 
   Future<dynamic> login(String username, String password) async {
-    final response = await http.post(
-      Uri.parse(_baseUrl),
-      headers: <String, String> { HttpHeaders.contentTypeHeader: appJson },
-      body: jsonEncode(
-        <String, String>{ 'username': username, 'password': password }
-      )
-    );
+    final response = await http.post(Uri.parse(_baseUrl),
+        headers: <String, String>{HttpHeaders.contentTypeHeader: appJson},
+        body: jsonEncode(
+            <String, String>{'username': username, 'password': password}));
 
     if (response.statusCode == 201) {
       dynamic user = jsonDecode(response.body);
@@ -28,5 +25,4 @@ class AuthService {
 
     return null;
   }
-
 }

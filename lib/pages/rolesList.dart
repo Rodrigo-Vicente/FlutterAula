@@ -1,29 +1,27 @@
+import 'package:aula_mobile_flutter_full06/pages/createRole.dart';
 import 'package:aula_mobile_flutter_full06/pages/editUser.dart';
 import 'package:aula_mobile_flutter_full06/pages/login.dart';
-import 'package:aula_mobile_flutter_full06/pages/rolesList.dart';
 import 'package:aula_mobile_flutter_full06/pages/user.dart';
+import 'package:aula_mobile_flutter_full06/services/roles_service.dart';
 import 'package:aula_mobile_flutter_full06/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class RolerPage extends StatefulWidget {
+  const RolerPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<RolerPage> createState() => _RolerPage();
 }
 
-class _HomePageState extends State<HomePage> {
-  final _title = 'Listagem de Usuários';
-  final _service = UserService();
+class _RolerPage extends State<RolerPage> {
+  final _title = 'Listagem de Roles';
+  final _service = rolesService();
 
-  Future<List<dynamic>> fetchUsers() async {
+  Future<List<dynamic>> fetchRoles() async {
     try {
       List<dynamic> list = await _service.getList();
-      list.add(<String, String>{
-        'id': '2',
-        'name': 'Fulano de Tal',
-        'username': 'fulanotal'
-      });
+      list.add(
+          <String, String>{'name': 'Teste', 'description': 'Apenas um teste'});
       return list;
     } catch (e) {
       // logout
@@ -31,19 +29,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void goToCreateUser(context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const UserPage()));
+  void goToCreateRole(context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const CreateRolePage()));
   }
 
   void logOut(context) {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const LoginPage()));
-  }
-
-  void goToRoleList(context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const RolerPage()));
   }
 
   @override
@@ -54,11 +47,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.person_add),
-            onPressed: () => goToCreateUser(context),
-          ),
-          IconButton(
-            icon: const Icon(Icons.library_books),
-            onPressed: () => goToRoleList(context),
+            onPressed: () => goToCreateRole(context),
           ),
           IconButton(
             icon: const Icon(Icons.logout),
@@ -75,7 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildList() {
     return FutureBuilder(
-      future: fetchUsers(),
+      future: fetchRoles(),
       builder: (context, snapshot) {
         List<dynamic> users = snapshot.data ?? [];
 
@@ -91,21 +80,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(5),
-                    child: Text(users[index]['username']),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditUserPage(
-                                  userId: (users[index]['id']).toString()),
-                            ));
-                      },
-                      child: Text('Editar'),
-                    ),
+                    child: Text(users[index]['description']),
                   )
                 ],
               );
