@@ -1,4 +1,8 @@
-# aula_mobile_flutter_full06
+# Trabalho 
+- membros:
+- André Pires RA: 2301741
+- Cesar Augusto RA: 2301321
+- Rodrigo Vicente RA: 2302235
 
 A new Flutter project.
 
